@@ -37,7 +37,7 @@ alpha_y = list(alpha_y)  # Convert to list
 
 # Initialize Dash app
 app = dash.Dash(__name__)
-
+server = app.server
 # App layout
 app.layout = html.Div([
     # Page Title: Centered
