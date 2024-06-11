@@ -50,5 +50,5 @@ app.layout = html.Div([
 ])
 
 if __name__ == '__main__':
-    # app.run(debug=True)
-    app.run_server(debug=True)
+    # app.run(debug=False)
+    app.run_server(debug=False)
