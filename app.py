@@ -4,7 +4,7 @@ import dash_bootstrap_components as dbc
 import pickle
 
 app = Dash(__name__, use_pages=True, external_stylesheets=[dbc.themes.BOOTSTRAP])
-
+server = app.server
 # styling the sidebar
 SIDEBAR_STYLE = {
     "position": "fixed",
@@ -50,4 +50,5 @@ app.layout = html.Div([
 ])
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # app.run(debug=True)
+    app.run_server(debug=True)

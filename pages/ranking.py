@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import itertools
 import dash
-from dash import dcc, html, callback, Input, Output
+from dash import dcc, html, callback, Input, Output, dash_table
 # from dash.dependencies import Input, Output
 import plotly.express as px
 
@@ -16,10 +16,9 @@ dropdown_options = [{'label': country_name, 'value': country_name} for country_c
 # Initialize Dash page
 dash.register_page(__name__)
 
-# page layout
 layout = html.Div([
 
-    dcc.Markdown('''### Per Country Genre-space'''),
+    dcc.Markdown('''### Most popular songs rank'''),
     html.Div([
         # Options row
         html.Div([
@@ -38,18 +37,39 @@ layout = html.Div([
                 id='country-dropdown-rank',
                 options=dropdown_options,
                 value='Global'
-                # placeholder='Select a country'
             )
-        ], style={'width': '49%', 'float': 'right', 'display': 'inline-block'}),
+        ], style={'width': '49%', 'display': 'inline-block'}),
     ], style={'display': 'flex', 'justify-content': 'space-between'}),
 
     # Interactive visualizations from the first section
     html.Div([
         dcc.Graph(id='rank-bumpchart')
-        
-
-        
     ]),
+
+    html.Div([
+        html.H2(id='table-title'),
+        dash_table.DataTable(
+            style_data={
+                'whiteSpace': 'normal',
+                'height': 'auto',
+            },
+            style_cell={
+                'overflow': 'hidden',
+                'textOverflow': 'ellipsis',
+                'maxWidth': '10px',
+            },
+            id='music-table',
+            columns=[{'name': 'Music', 'id': 'track_name'},
+                        {'name': 'Artists', 'id': 'artists'},
+                        {'name': 'Release Date', 'id': 'album_release_date'},
+                        {'name': 'Daily Rank', 'id': 'daily_rank'},
+                        {'name': 'Daily Movement', 'id': 'daily_movement'}],
+            data=[],
+            page_size=10
+        )
+    ]),
+    
+        
 ])
 
 
@@ -83,23 +103,7 @@ def update_rank_bumpchart(start_date, end_date, country_name):
     # Join with original DataFrame
     Top10rank = pd.merge(filtered_df, Top10summary, on='track_name', how='right')
     
-    # # Adding rank gaps
-    # dr = pd.date_range(start_date, end_date, freq='d')
-    
-    # # Creating dummy data for consistent gaps:
-
-    # # Step 1: Get unique music_id and snapshot_date values
-    # unique_spotify_ids = Top10rank['spotify_id'].unique()
-
-    # # Step 2: Create all combinations of music_id and snapshot_date
-    # all_combinations = list(itertools.product(unique_spotify_ids, dr))
-
-    # # Step 3: Convert the combinations into a DataFrame
-    # df_all_combinations = pd.DataFrame(all_combinations, columns=['spotify_id', 'snapshot_date'])
-    # df_all_combinations['snapshot_date'] = df_all_combinations['snapshot_date'].astype(str)
-
-    # # Step 4: Merge with the original DataFrame to fill missing rows
-    # Top10rank_with_gap_data = pd.merge(df_all_combinations, Top10rank, on=['spotify_id', 'snapshot_date'], how='left')
+   
     
     # Top10rank_with_gap_data.to_csv('bd.csv')
     Top10rank_sorted = Top10rank.sort_values(by='snapshot_date')
@@ -122,6 +126,41 @@ def update_rank_bumpchart(start_date, end_date, country_name):
     return fig
 
 
+@callback(
+    [Output('table-title', 'children'),
+      Output('music-table', 'data')],
+    [
+     Input('date-range-picker-rank', 'start_date'),
+     Input('country-dropdown-rank', 'value'),
+     Input('rank-bumpchart', 'clickData')]
+)
+def update_table(start_date, country_name, clickData):
+    
+    
+    title = "Top Songs in " + country_name
+    if clickData:
+        date = clickData['points'][0]['x']
+        filtered_df = filter_by_country_and_date(date, 
+                                             date, 
+                                             country_name, 
+                                             drop_duplicates=True, 
+                                             drop_subset='spotify_id', 
+                                             cols=['track_name','artists','album_release_date','daily_rank','daily_movement'])
+        title = title + " " + date
+    else:
+        filtered_df = filter_by_country_and_date(start_date, 
+                                             start_date, 
+                                             country_name, 
+                                             drop_duplicates=True, 
+                                             drop_subset='spotify_id', 
+                                             cols=['track_name','artists','album_release_date','daily_rank','daily_movement'])
+        title = title + " " + start_date
+    
+    
+    
+    
+    
+    return title, filtered_df.to_dict('records')#, data_table.to_dict('records')
 # Auxiliar Functions
 def filter_by_country_and_date(start_date, end_date, country_name, drop_duplicates=False, drop_subset=None, cols=[]):
     
