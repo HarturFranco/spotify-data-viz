@@ -184,3 +184,4 @@ vtk==9.3.0
 wcwidth==0.2.13
 Werkzeug==3.0.2
 zipp==3.18.1
+gunicorn
