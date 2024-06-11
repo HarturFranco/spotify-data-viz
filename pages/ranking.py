@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import itertools
 import dash
 from dash import dcc, html, callback, Input, Output
 # from dash.dependencies import Input, Output
@@ -82,12 +83,39 @@ def update_rank_bumpchart(start_date, end_date, country_name):
     # Join with original DataFrame
     Top10rank = pd.merge(filtered_df, Top10summary, on='track_name', how='right')
     
-    fig = px.line(Top10rank, x='snapshot_date', y='daily_rank', color='track_name',
-                title="Daily Ranking of the Top 10 Songs on Spotify's Global Top 50 Chart (Oct 18 - Nov 18)",
-                labels={'snapshot_date': 'Date', 'daily_rank': 'Daily Rank'},
-                template='plotly_dark', range_y=[50,1])
+    # # Adding rank gaps
+    # dr = pd.date_range(start_date, end_date, freq='d')
     
+    # # Creating dummy data for consistent gaps:
+
+    # # Step 1: Get unique music_id and snapshot_date values
+    # unique_spotify_ids = Top10rank['spotify_id'].unique()
+
+    # # Step 2: Create all combinations of music_id and snapshot_date
+    # all_combinations = list(itertools.product(unique_spotify_ids, dr))
+
+    # # Step 3: Convert the combinations into a DataFrame
+    # df_all_combinations = pd.DataFrame(all_combinations, columns=['spotify_id', 'snapshot_date'])
+    # df_all_combinations['snapshot_date'] = df_all_combinations['snapshot_date'].astype(str)
+
+    # # Step 4: Merge with the original DataFrame to fill missing rows
+    # Top10rank_with_gap_data = pd.merge(df_all_combinations, Top10rank, on=['spotify_id', 'snapshot_date'], how='left')
     
+    # Top10rank_with_gap_data.to_csv('bd.csv')
+    Top10rank_sorted = Top10rank.sort_values(by='snapshot_date')
+    fig = px.scatter(Top10rank_sorted, x='snapshot_date', y='daily_rank', color='track_name',
+                title=f"Daily Ranking of the Top 10 Songs on Spotify's {country_name} Top 50 Chart",
+                labels={'snapshot_date': 'Date', 'daily_rank': 'Daily Rank'},#template='plotly_dark',
+                range_y=[50,1])
+    fig.update_traces(mode='lines')
+    fig.update_layout(legend=dict(
+        orientation="h",
+        # entrywidth=70,
+        yanchor="bottom",
+        y=-0.50,
+        xanchor="right",
+        x=1
+    ))
     
     # trace = go.Scatter(x=filtered_df['snapshot_date'], y=filtered_df['value'], mode='lines')
     # layout = go.Layout(title='Time Series Visualization', xaxis=dict(title='Date'), yaxis=dict(title='Value'))

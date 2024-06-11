@@ -1,19 +1,10 @@
 import dash
-import pandas as pd
-import numpy as np
 import pickle
-from scipy.spatial import Delaunay
-from shapely.geometry import MultiPoint
 from dash import dcc, html
-import plotly.express as px
 
-enao = pd.read_csv('./data/enao.csv')
-
-# Enao Alpha Shape
-
-# Load x and y coordinates from the alpha shape polygon
-with open('./data/convex_hull_enao', 'rb') as file:
-  alpha_x, alpha_y = pickle.load(file)
+# Load Enao Fig
+with open('./data/enaofig', 'rb') as file:
+  enaofig = pickle.load(file)
 
 dash.register_page(__name__, path='/')
 
@@ -39,15 +30,18 @@ layout = html.Div([
                    a consensus on where this border is drawn, even within a single society.
                    
                    
-                   
                    Music has been described as an universal cultural element that transcends boarders and 
                    connect us as humans. Like many other media, the music consumption at this day and age 
-                   is primarily stream based, and with all the complex discussions on the 
+                   is primarily stream based, and with that we sudently have easy acces to data that can 
+                   help understand many complex discussions on the subject.
                    
-                  
+                   Spotify, one of the biggests music streaming services in the world, has a API for developpers that
+                   allow us to get a wide range of data from users, artists, albums and tracks. Spotify also mantains
+                   Top 50 songs playlists in over 70 diferent countries, as well as a global one. Tracking these 
+                   playlists allows us to build visualizations that can help us understand things like the impact of 
+                   culture in music consumption, identify exceptions and events that disturb the pattern of consumption, etc.
                    
-                   
-                   
+
                    
                    
                    
@@ -85,17 +79,9 @@ layout = html.Div([
 
         html.Div([
             html.Div([
-                # dcc.Graph(id='ENAO-genre-space',
+                dcc.Graph(id='ENAO-genre-space',
                     
-                #      figure=px.scatter(enao, x='left', y='top', height=400, width=400,
-                #      color='color', color_discrete_map="identity", hover_name='genre',
-                #      labels={
-                #         "top": "← organic | mechanical and electric →",
-                #         "left": "← denser and atmospheric | spikier and bouncier →"
-                #      },
-                #      title=f'Every Noise at Once Genre-Space')
-                #       .add_scatter(x=alpha_x, y=alpha_y, mode='lines', line=dict(color='black', width=0.5), showlegend=False)
-                #       .update_layout(xaxis=dict(range=[-100, 1550]), yaxis=dict(range=[-1000, 23500])))    
+                     figure=enaofig)    
             ], style={'width':'400px','marginLeft': 'auto', 'marginRight': 'auto'})
             
         ], style={'width': '49%', 'display': 'inline-block', 'height': '400px'}),

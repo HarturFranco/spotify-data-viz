@@ -65,7 +65,7 @@ layout = html.Div([
     html.Div([
         html.Div([
             dcc.Graph(id='enao-graph')
-        ], style={'width': '49%', 'display': 'inline-block', 'padding': '0 20'}),
+        ], style={'width': '59%', 'display': 'inline-block', 'padding': '0 20'}),
 
         html.Div([
             html.H2(id='table-title'),
@@ -84,7 +84,7 @@ layout = html.Div([
                 data=[],
                 page_size=20
             )
-        ], style={'width': '49%', 'display': 'inline-block', 'height': '800px'}),
+        ], style={'width': '39%', 'display': 'inline-block', 'height': '800px'}),
     ], style={'display': 'flex', 'flexDirection': 'row'}),
 
     

@@ -1,6 +1,7 @@
 import dash
 from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
+import pickle
 
 app = Dash(__name__, use_pages=True, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -29,9 +30,9 @@ app.layout = html.Div([
    html.Div(
     [
         html.H1("Spotify TOP-50 Songs Visualization", className="display-8"),
-        html.P(
-            "by: Arthur Silveira Franco", className="lead"
-        ),
+        # html.P(
+        #     "by: Arthur Silveira Franco", className="lead"
+        # ),
         html.Hr(),
         dbc.Nav(
             [
