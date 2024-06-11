@@ -8,7 +8,7 @@ import plotly.express as px
 
 # Load Data
 
-spotify_top50_daily_wGenres = pd.read_csv('./data/universal_top_songs_final.csv')
+spotify_top50_daily_wGenres = pd.read_csv('./data/universal_top_songs_final.csv',usecols=['spotify_id', 'track_name', 'artists', 'snapshot_date' , 'country_name', 'country', 'daily_movement', 'daily_rank', 'album_release_date'])
 
 unique_countries = list(zip(spotify_top50_daily_wGenres['country'].unique(),spotify_top50_daily_wGenres['country_name'].unique()))
 dropdown_options = [{'label': country_name, 'value': country_name} for country_code, country_name in unique_countries]

@@ -11,7 +11,7 @@ import plotly.graph_objects as go
 
 # Load Data
 
-spotify_top50_daily_wGenres = pd.read_csv('./data/universal_top_songs_final.csv')
+spotify_top50_daily_wGenres = pd.read_csv('./data/universal_top_songs_final.csv',usecols=['spotify_id', 'track_name', 'artists', 'snapshot_date', 'genres', 'country_name', 'country'])
 enao = pd.read_csv('./data/enao.csv')
 
 unique_countries = list(zip(spotify_top50_daily_wGenres['country'].unique(),spotify_top50_daily_wGenres['country_name'].unique()))
@@ -109,7 +109,7 @@ def update_graph(start_date, end_date, country_names):
                                                 country_name, 
                                                 drop_duplicates=True, 
                                                 drop_subset='spotify_id', 
-                                                cols=['spotify_id', 'track_name', 'artists', 'daily_rank', 'daily_movement', 'popularity', 'is_explicit', 'genres'])
+                                                cols=['spotify_id', 'track_name', 'artists', 'genres'])
         
         # Split genres in df_songs into individual rows
         filtered_data_gere_exp = filtered_df.assign(genres=filtered_df['genres'].str.split(', ')).explode('genres')
